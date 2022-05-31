@@ -17,10 +17,10 @@ import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import io.ktor.http.*
-import io.ktor.serialization.kotlinx.json.*
 import io.ktor.serialization.kotlinx.xml.*
 import kotlinx.coroutines.launch
 import kotlinx.serialization.Serializable
+import nl.adaptivity.xmlutil.serialization.XmlElement
 
 //==================================================================
 // MAIN ACTIVITY
@@ -52,7 +52,7 @@ suspend fun callURL() : String  {
   }
 
   //CAL URL
-  val httpResponse: HttpResponse = client.post("http://192.168.0.102:8080/SendBodyXML") {
+  val httpResponse: HttpResponse = client.post("http://192.168.0.108:8080/SendBodyXML") {
     contentType(ContentType.Application.Xml)
     setBody(PersonDTOXML(1, "John", 20))
   }
@@ -66,7 +66,11 @@ suspend fun callURL() : String  {
 }
 
 //==================================================================
-// PERSON
+// PERSON DTO XML
 //==================================================================
 @Serializable
-data class PersonDTOXML(val id: Int, val name: String, val age: Int)
+data class PersonDTOXML(
+                    val id  : Int,     //Serialize Property into XML Property      (default)
+  @XmlElement(true) val name: String,  //Serialize Property into XML Child Element
+  @XmlElement(true) val age : Int      //Serialize Property into XML Child Element
+)
